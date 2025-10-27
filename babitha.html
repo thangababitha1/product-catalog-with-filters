@@ -1,0 +1,343 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Catalog with Filters</title>
+    <style>
+        /* --- CSS for Layout and Style --- */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            width: 250px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-right: 20px;
+            height: fit-content;
+        }
+
+        .catalog {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .product-card h3 {
+            margin-top: 5px;
+            font-size: 1.2em;
+        }
+
+        .product-card p {
+            font-weight: bold;
+            color: #007bff;
+            margin: 5px 0 10px 0;
+        }
+
+        /* Filter Styles */
+        .filter-group {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .no-results {
+            grid-column: 1 / -1; /* Span across all columns */
+            text-align: center;
+            padding: 50px;
+            font-size: 1.5em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="sidebar">
+            <h2>Filter Products</h2>
+
+            <div class="filter-group">
+                <label for="category-filter">Category:</label>
+                <select id="category-filter" onchange="applyFilters()">
+                    <option value="all">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="apparel">Apparel</option>
+                    <option value="home">Home Goods</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Max Price: <span id="price-value">$200</span></label>
+                <input type="range" id="price-filter" min="10" max="1000" value="200" step="10" oninput="document.getElementById('price-value').textContent = '$' + this.value; applyFilters()">
+            </div>
+            
+            <button onclick="document.getElementById('category-filter').value = 'all'; document.getElementById('price-filter').value = '1000'; applyFilters()">
+                Clear Filters
+            </button>
+        </div>
+
+        <div class="catalog" id="product-catalog">
+            </div>
+    </div>
+
+    <script>
+        // --- JavaScript for Data and Filtering Logic ---
+        const products = [
+            { id: 1, name: "Noise-Cancelling Headphones", price: 150, category: "electronics" },
+            { id: 2, name: "Organic Cotton T-Shirt", price: 35, category: "apparel" },
+            { id: 3, name: "Smart Watch", price: 299, category: "electronics" },
+            { id: 4, name: "Vintage Leather Jacket", price: 350, category: "apparel" },
+            { id: 5, name: "Espresso Machine", price: 450, category: "home" },
+            { id: 6, name: "Portable Bluetooth Speaker", price: 80, category: "electronics" },
+            { id: 7, name: "Ceramic Coffee Mug (Set of 4)", price: 45, category: "home" },
+            { id: 8, name: "Running Sneakers", price: 95, category: "apparel" }
+        ];
+
+        const catalogDiv = document.getElementById('product-catalog');
+
+        // Function to render the product cards
+        function renderProducts(filteredProducts) {
+            catalogDiv.innerHTML = ''; // Clear existing products
+
+            if (filteredProducts.length === 0) {
+                catalogDiv.innerHTML = '<div class="no-results">No products found matching your criteria. Try adjusting your filters.</div>';
+                return;
+            }
+
+            filteredProducts.forEach(product => {
+                const card = document.createElement('div');
+                card.classList.add('product-card');
+                card.innerHTML = `
+                    <h3>${product.name}</h3>
+                    <p>$${product.price.toFixed(2)}</p>
+                    <small>Category: ${product.category}</small>
+                `;
+                catalogDiv.appendChild(card);
+            });
+        }
+
+        // Main function to apply all filters
+        function applyFilters() {
+            const selectedCategory = document.getElementById('category-filter').value;
+            const maxPrice = parseFloat(document.getElementById('price-filter').value);
+
+            let filteredProducts = products.filter(product => {
+                // 1. Filter by Category
+                const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory;
+
+                // 2. Filter by Price
+                const priceMatch = product.price <= maxPrice;
+
+                return categoryMatch && priceMatch;
+            });
+
+            renderProducts(filteredProducts);
+        }
+
+        // Initial load of the catalog
+        applyFilters();
+
+    </script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Catalog with Filters</title>
+    <style>
+        /* --- CSS for Layout and Style --- */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            width: 250px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-right: 20px;
+            height: fit-content;
+        }
+
+        .catalog {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .product-card h3 {
+            margin-top: 5px;
+            font-size: 1.2em;
+        }
+
+        .product-card p {
+            font-weight: bold;
+            color: #007bff;
+            margin: 5px 0 10px 0;
+        }
+
+        /* Filter Styles */
+        .filter-group {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .no-results {
+            grid-column: 1 / -1; /* Span across all columns */
+            text-align: center;
+            padding: 50px;
+            font-size: 1.5em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="sidebar">
+            <h2>Filter Products</h2>
+
+            <div class="filter-group">
+                <label for="category-filter">Category:</label>
+                <select id="category-filter" onchange="applyFilters()">
+                    <option value="all">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="apparel">Apparel</option>
+                    <option value="home">Home Goods</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Max Price: <span id="price-value">$200</span></label>
+                <input type="range" id="price-filter" min="10" max="1000" value="200" step="10" oninput="document.getElementById('price-value').textContent = '$' + this.value; applyFilters()">
+            </div>
+            
+            <button onclick="document.getElementById('category-filter').value = 'all'; document.getElementById('price-filter').value = '1000'; applyFilters()">
+                Clear Filters
+            </button>
+        </div>
+
+        <div class="catalog" id="product-catalog">
+            </div>
+    </div>
+
+    <script>
+        // --- JavaScript for Data and Filtering Logic ---
+        const products = [
+            { id: 1, name: "Noise-Cancelling Headphones", price: 150, category: "electronics" },
+            { id: 2, name: "Organic Cotton T-Shirt", price: 35, category: "apparel" },
+            { id: 3, name: "Smart Watch", price: 299, category: "electronics" },
+            { id: 4, name: "Vintage Leather Jacket", price: 350, category: "apparel" },
+            { id: 5, name: "Espresso Machine", price: 450, category: "home" },
+            { id: 6, name: "Portable Bluetooth Speaker", price: 80, category: "electronics" },
+            { id: 7, name: "Ceramic Coffee Mug (Set of 4)", price: 45, category: "home" },
+            { id: 8, name: "Running Sneakers", price: 95, category: "apparel" }
+        ];
+
+        const catalogDiv = document.getElementById('product-catalog');
+
+        // Function to render the product cards
+        function renderProducts(filteredProducts) {
+            catalogDiv.innerHTML = ''; // Clear existing products
+
+            if (filteredProducts.length === 0) {
+                catalogDiv.innerHTML = '<div class="no-results">No products found matching your criteria. Try adjusting your filters.</div>';
+                return;
+            }
+
+            filteredProducts.forEach(product => {
+                const card = document.createElement('div');
+                card.classList.add('product-card');
+                card.innerHTML = `
+                    <h3>${product.name}</h3>
+                    <p>$${product.price.toFixed(2)}</p>
+                    <small>Category: ${product.category}</small>
+                `;
+                catalogDiv.appendChild(card);
+            });
+        }
+
+        // Main function to apply all filters
+        function applyFilters() {
+            const selectedCategory = document.getElementById('category-filter').value;
+            const maxPrice = parseFloat(document.getElementById('price-filter').value);
+
+            let filteredProducts = products.filter(product => {
+                // 1. Filter by Category
+                const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory;
+
+                // 2. Filter by Price
+                const priceMatch = product.price <= maxPrice;
+
+                return categoryMatch && priceMatch;
+            });
+
+            renderProducts(filteredProducts);
+        }
+
+        // Initial load of the catalog
+        applyFilters();
+
+    </script>
+
+</body>
+</html>
